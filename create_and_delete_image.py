@@ -44,7 +44,7 @@ try:
     logger.info("Trying to authenticate at Keystone...  ")
     conn = connection.Connection(username=USERNAME, password=PASSWORD, auth_url=AUTH_URL,
                                  project_name=PROJECT_NAME,
-                                 user_domain_name=USER_DOMAIN_NAME, project_domain_name='default')
+                                 user_domain_name=USER_DOMAIN_NAME, project_domain_name=PROJECt_DOMAIN_NAME)
     logger.info("Session created...  ")
 
     glance = Client(VERSION, session=conn.session)

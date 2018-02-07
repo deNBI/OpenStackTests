@@ -1,12 +1,12 @@
 
 
 authentication:
-    os_username: 'd'
-    os_password: 'd'
-    os_project_name: 'd'
-    os_user_domain_name: 'd'
-    os_auth_url: 'd'
-    os_project_domain_name: 'ds'
+    os_username: 
+    os_password: 
+    os_project_name: 
+    os_user_domain_name: 
+    os_auth_url: 
+    os_project_domain_name: 
     
     
 endpoints: 
