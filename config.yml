@@ -1,0 +1,25 @@
+
+
+authentication:
+    os_username: 'd'
+    os_password: 'd'
+    os_project_name: 'd'
+    os_user_domain_name: 'd'
+    os_auth_url: 'd'
+    os_project_domain_name: 'ds'
+    
+    
+endpoints: 
+    cinder_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:8776/v1/'
+    cinderv2_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:8776/v2/'
+    glance_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:9292/'
+    keystone_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:5000/v3/'
+    neutron_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:9696'
+    nova_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:8774/v2.1/'
+    swift_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:8080/swift/v1/'
+
+image:
+    image_download_url: 'http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img'
+    image_tmp_file: '/tmp/cirros.img'
+
+logfile: 'debug.log'
