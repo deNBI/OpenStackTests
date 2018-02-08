@@ -233,7 +233,7 @@ try:
     start_server(conn, subnet_id=subnet_id)
     floating_IP = add_floating_ip_to_server(conn, subnet_id=subnet_id)
     print(floating_IP)
-    time.sleep(20)
+    time.sleep(60)
     connect_ssh_check_google(floating_ip='172.21.40.56')
     cleanup(conn, subnet_id=subnet_id, floating_ip=floating_IP)
     logger.info("Succesfull complex test..")
