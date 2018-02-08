@@ -2,9 +2,17 @@ network_name: 'Test_Network'
 router_name: 'Test_Router'
 subnetwork_name: 'Test_Subnetwork'
 instance_name: 'Test_Instance'
+
+
 subnetwork_cidr: '192.168.0.0/24'
 subnetwork_gateway: '192.168.0.0/24'
 external_gateway_network_id: 'fc595b3c-515c-492b-9610-dee8df1997f6'
+floating_ip_network: 'cebitec'
 default_image: 'cirros'
 default_flavor: 'de.NBI.default'
-floating_ip_network: 'cebitec'
+default_user: 'cirros'
+#If you use cirros image set the cirros password: cubswin:)  , else just leave it blank
+cirros_password: 'cubswin:)'
+private_key_file: 'test.pem'
+public_key: 'Test'
+
