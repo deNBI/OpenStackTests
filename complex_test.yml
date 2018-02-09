@@ -1,18 +1,30 @@
+# just some names
 network_name: 'Test_Network'
 router_name: 'Test_Router'
 subnetwork_name: 'Test_Subnetwork'
 instance_name: 'Test_Instance'
 
-
+# cidr to use by the subnet
 subnetwork_cidr: '192.168.0.0/24'
+# gateway to use by the subnet
 subnetwork_gateway: '192.168.0.0/24'
+
+# network id of the external gateway which the router uses
 external_gateway_network_id: 'fc595b3c-515c-492b-9610-dee8df1997f6'
+
+# network which delivers the floating ip
 floating_ip_network: 'cebitec'
+# default image to use
 default_image: 'cirros'
+# default flavor to use
 default_flavor: 'de.NBI.default'
+# the default user to use for login into the machine with ssh
 default_user: 'cirros'
 #If you use cirros image set the cirros password: cubswin:)  , else just leave it blank
 cirros_password: 'cubswin:)'
+# the private key file for the login with ssh
 private_key_file: 'test.pem'
+
+# the name of the public key (e.g negios)
 public_key: 'Test'
 
