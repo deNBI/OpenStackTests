@@ -162,25 +162,22 @@ def connect_ssh_check_google(floating_ip):
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(floating_ip, username=DEFAULT_USER, password=CIRROS_PASSWORD, key_filename=PRIVATE_KEY_FILE)
     logger.info("Setting http_proxy...")
-    logger.info("Trying to curl -I -X GET www.google.de")
-    stdin, stdout, stdrr = ssh.exec_command('export http_proxy=http://proxy.cebitec.uni-bielefeld.de:3128;curl -I -X GET www.google.de;',get_pty=True)
-    response = stdout.readlines()
-    logger.info("Closing SSH  connection")
-    ssh.close()
-    http_code = list(response)[0]
-    http_code = http_code.split(" ")
-    if (http_code[1][0] == '2'):
+    logger.info("Trying to wget -q http://www.google.de/")
+    stdin, stdout, stdrr = ssh.exec_command('export http_proxy=http://proxy.cebitec.uni-bielefeld.de:3128; wget -q http://www.google.de/; echo $?;',get_pty=True)
+    response = stdout.readlines()[0].replace("\r\n","")
+    if (response == '0'):
         logger.info("Connection to Google sucessfull..")
     else:
-        logger.error("Google test did not returned 2** HTTP Code")
-        print("Google test did not returned 2** HTTP Code")
+        logger.error("Google test failed and wget returned " + response)
+        print("Google test failed and wget returned " + response)
+        cleanup(conn,floating_ip,subnet_id)
         sys.exit(2)
 
 
 
-# The Test start here
+# The Test starts here
 try:
-
+    #Reading config variables
     with open('config.yml', 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
         LOGFILE = cfg['logfile']
@@ -210,7 +207,7 @@ try:
 except Exception as e:
     print("Config error: " + str(e)[:90])
     sys.exit(2)
-
+#setting up logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 fh = logging.FileHandler(LOGFILE)
@@ -234,7 +231,7 @@ try:
     floating_IP = add_floating_ip_to_server(conn, subnet_id=subnet_id)
     print(floating_IP)
     time.sleep(60)
-    connect_ssh_check_google(floating_ip='172.21.40.56')
+    connect_ssh_check_google(floating_ip=floating_IP)
     cleanup(conn, subnet_id=subnet_id, floating_ip=floating_IP)
     logger.info("Succesfull complex test..")
     logger.info("-----------")
