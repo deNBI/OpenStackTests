@@ -1,6 +1,6 @@
 # OpenStackTests
-This repositroy contains some Openstack tests.
-##Configuration
+This repositroy contains some Openstack tests. <br>
+## Configuration
 You need to install the requirements.
 ~~~bash
 $> pip install -r requirements.txt
