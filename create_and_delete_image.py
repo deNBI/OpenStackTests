@@ -1,25 +1,26 @@
 from openstack import connection
 import sys, os
 from glanceclient import Client
-import logging,requests
+import logging, requests
 import yaml
-VERSION=2
+
+VERSION = 2
 try:
-    with open('config.yml','r') as ymlfile:
-        cfg=yaml.load(ymlfile)
-        LOGFILE=cfg['logfile']
-        USERNAME=cfg['authentication']['os_username']
-        PASSWORD=cfg['authentication']['os_password']
-        PROJECT_NAME=cfg['authentication']['os_project_name']
-        USER_DOMAIN_NAME=cfg['authentication']['os_user_domain_name']
-        AUTH_URL=cfg['authentication']['os_auth_url']
-        PROJECt_DOMAIN_NAME=cfg['authentication']['os_project_domain_name']
-        CINDER_ENDPOINTv2=cfg['endpoints']['cinderv2_endpoint']
-        IMAGE_FILE=cfg['image']['image_tmp_file']
-        IMAGE_URL=cfg['image']['image_download_url']
+    with open('config.yml', 'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+        LOGFILE = cfg['logfile']
+        USERNAME = cfg['authentication']['os_username']
+        PASSWORD = cfg['authentication']['os_password']
+        PROJECT_NAME = cfg['authentication']['os_project_name']
+        USER_DOMAIN_NAME = cfg['authentication']['os_user_domain_name']
+        AUTH_URL = cfg['authentication']['os_auth_url']
+        PROJECt_DOMAIN_NAME = cfg['authentication']['os_project_domain_name']
+        CINDER_ENDPOINTv2 = cfg['endpoints']['cinderv2_endpoint']
+        IMAGE_FILE = cfg['image']['image_tmp_file']
+        IMAGE_URL = cfg['image']['image_download_url']
 
 except Exception as e:
-    print("Config error: " +  str(e)[:90])
+    print("Config error: " + str(e)[:90])
     sys.exit(2)
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,8 @@ fh.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - - %(levelname)s  - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
+
+
 def deleting_image():
     logger.info("Deleting Image from tmp...")
     os.remove(IMAGE_FILE)
@@ -36,10 +39,15 @@ def deleting_image():
     logger.info("Deleting Image from Openstack...")
     glance.images.delete(image.id)
     logger.info("Image deleted from openstack......")
+
+
 try:
+
+    logger.info("----------------------")
+    logger.info("Start Test: create_and_delete_image")
     logger.info("Downloading Cirros image..")
-    r=requests.get(IMAGE_URL,stream=True)
-    with open(IMAGE_FILE ,"wb") as f:
+    r = requests.get(IMAGE_URL, stream=True)
+    with open(IMAGE_FILE, "wb") as f:
         f.write(r.content)
     logger.info("Trying to authenticate at Keystone...  ")
     conn = connection.Connection(username=USERNAME, password=PASSWORD, auth_url=AUTH_URL,
@@ -65,11 +73,14 @@ try:
     logger.info("Image active...")
 
     deleting_image()
+    logger.info("Succesfull test create_and_delete_image")
+    logger.info("----------------------")
     sys.exit(0)
 except Exception as e:
     os.remove(IMAGE_FILE)
+
     logger.error(str(e))
+    logger.info("Failed test create_and_delete_image")
+    logger.info("----------------------")
     print(str(e)[:100])
     sys.exit(2)
-
-

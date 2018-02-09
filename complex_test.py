@@ -156,7 +156,7 @@ def add_floating_ip_to_server(conn, subnet_id):
 
 def connect_ssh_check_google(floating_ip):
     logger.info("Removing IP from known hosts..")
-    subprocess.call(['ssh-keygen -R ' + str(floating_ip)],shell=True)
+    subprocess.call(['ssh-keygen -R ' + str(floating_ip)],shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     logger.info("Trying to connect with SSH to the machine")
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -187,7 +187,7 @@ try:
         USER_DOMAIN_NAME = cfg['authentication']['os_user_domain_name']
         AUTH_URL = cfg['authentication']['os_auth_url']
         PROJECT_DOMAIN_NAME = cfg['authentication']['os_project_domain_name']
-    with open('create_network_subnet_router.yml', 'r') as ymlfile:
+    with open('complex_test.yml', 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
         NETWORK_NAME = cfg['network_name']
         SUBNETWORK_NAME = cfg['subnetwork_name']
@@ -229,7 +229,6 @@ try:
     create_router(conn, subnet_id=subnet_id)
     start_server(conn, subnet_id=subnet_id)
     floating_IP = add_floating_ip_to_server(conn, subnet_id=subnet_id)
-    print(floating_IP)
     time.sleep(60)
     connect_ssh_check_google(floating_ip=floating_IP)
     cleanup(conn, subnet_id=subnet_id, floating_ip=floating_IP)
