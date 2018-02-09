@@ -2,10 +2,10 @@
 This repositroy contains some Openstack tests.
 ##Configuration
 You need to install the requirements.
-'''bash
-pip install -r requirements.txt
-'''
-Before you can start the tests, you need to set some configurations.
+~~~bash
+$> pip install -r requirements.txt
+~~~
+Before you can start the tests, you need to set some configurations. <br>
 You need to set them on the config.yml for all tests and also for the complex test in the complex_test.yml
 
 ## Basic-Test
@@ -21,7 +21,7 @@ There are some basic tests:
 8. create_and_delete_image.py -> Downloads an cirros Image and uploads it a the Openstack-Project, than deletes it
 
 ## Complex-Test
-The complex test needs beside the config.yml  also the complex_test.yml
+The complex test needs beside the config.yml  also the complex_test.yml <br>
 The complex Test complex_test.py follows the following Steps:
 
 1. Creates a network,subnet and a router connected to a specific network
