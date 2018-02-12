@@ -26,9 +26,8 @@ try:
     logger.info("Start Test: check_keystone")
     logger.info("Trying to connect to Keystone-Endpoint... ")
     r=requests.get(AUTH_URL)
-    print(r.content)
     if(str(r.status_code)[0] == '2'):
-        logger.info("Nova alive ...")
+        logger.info("Keystone alive ...")
         logger.info("Succesful Test: check_keystone")
         logger.info("----------------------")
         sys.exit(0)
