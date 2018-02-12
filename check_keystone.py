@@ -34,7 +34,7 @@ try:
         sys.exit(0)
     else:
         logger.error(str(r.status_code) + ": " + str(r.content)[:97])
-        logger.info("Failed Test: check_nova")
+        logger.info("Failed Test: check_keystone")
         logger.info("----------------------")
         print(str(r.status_code) + ": " + str(r.content))
         sys.exit(2)
