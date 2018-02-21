@@ -98,20 +98,20 @@ def start_server(conn, subnet_id):
 
     image = conn.compute.find_image(DEFAULT_IMAGE)
     if image is None:
-        logger.error("Image " + str(image) + " not found")
-        print(("Image " + str(image) + " not found"))
+        logger.error("Image {0}  not found".format(image))
+        print(("Image {0}  not found".format(image)))
         cleanup(conn, subnet_id=subnet_id)
         sys.exit(2)
     flavor = conn.compute.find_flavor(DEFAULT_FLAVOR)
     if flavor is None:
-        print("Flavor" + str(flavor) + " not found")
-        logger.error("Flavor " + str(flavor) + " not found")
+        print("Flavor {0} not found".format(flavor))
+        logger.error("Flavor {0} not found".format(flavor))
         cleanup(conn, subnet_id=subnet_id)
         sys.exit(2)
     network = conn.network.find_network(NETWORK_NAME)
     if network is None:
-        logger.error("Network " + str(network) + " not found")
-        print("Network " + str(network) + " not found")
+        logger.error("Network {0} not found".format(network))
+        print("Network {0} not found".format(network))
         cleanup(conn, subnet_id=subnet_id)
         sys.exit(2)
 
@@ -129,8 +129,8 @@ def add_floating_ip_to_server(conn, subnet_id):
 
     server = conn.compute.find_server(INSTANCE_NAME)
     if server is None:
-        logger.error("Instance " + INSTANCE_NAME + "not found")
-        print("Instance " + INSTANCE_NAME + "not found")
+        logger.error("Instance {0} not found".format(INSTANCE_NAME))
+        print("Instance {0} not found".format(INSTANCE_NAME))
         cleanup(conn, subnet_id=subnet_id)
         sys.exit(2)
     server = conn.compute.get_server(server)
@@ -138,13 +138,13 @@ def add_floating_ip_to_server(conn, subnet_id):
     for floating_ip in conn.network.ips():
         if not floating_ip.fixed_ip_address:
             conn.compute.add_floating_ip_to_server(server, floating_ip.floating_ip_address)
-            logger.info("Adding existing Floating IP " + str(floating_ip.floating_ip_address) + "to  " + INSTANCE_NAME)
+            logger.info("Adding existing Floating IP  {0} to {1}".format(floating_ip.floating_ip_address,INSTANCE_NAME))
             return str(floating_ip.floating_ip_address)
 
     networkID = conn.network.find_network(FLOATING_IP_NETWORK)
     if networkID is None:
-        logger.error("Network " + FLOATING_IP_NETWORK + " not found")
-        print("Network " + FLOATING_IP_NETWORK + " not found")
+        logger.error("Network {0} not found".format(FLOATING_IP_NETWORK))
+        print("Network {0} not found".format(FLOATING_IP_NETWORK))
         cleanup(conn, subnet_id=subnet_id)
         sys.exit(2)
     networkID = networkID.to_dict()['id']
@@ -156,7 +156,7 @@ def add_floating_ip_to_server(conn, subnet_id):
 
 def connect_ssh_check_google(floating_ip):
     logger.info("Removing IP from known hosts..")
-    subprocess.call(['ssh-keygen -R ' + str(floating_ip)],shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    subprocess.call(['ssh-keygen -R {0}'.format(floating_ip)],shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     logger.info("Trying to connect with SSH to the machine")
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
