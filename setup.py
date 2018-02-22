@@ -16,18 +16,11 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',  # example license
-    description='A simple Django connector.',
+    description='Some Openstack tests.',
     long_description=README,
-    url='https://www.example.com/',
-    author='Your Name',
     install_requires = requirements,
-    author_email='yourname@example.com',
+
     classifiers=[
-        'Environment :: Web Environment',
-        'Framework :: Django',
-        'Framework :: Django :: X.Y',  # replace "X.Y" as appropriate
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',  # example license
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         # Replace these appropriately if you are stuck on Python 2.
