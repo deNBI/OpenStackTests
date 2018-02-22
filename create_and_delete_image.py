@@ -2,6 +2,10 @@ from openstack import connection
 import sys, os
 from glanceclient import Client
 import logging, requests
+from keystoneauth1.identity import v3
+from keystoneauth1 import session
+
+
 import yaml
 
 VERSION = 2
@@ -11,12 +15,10 @@ try:
         LOGFILE = cfg['logfile']
         USERNAME = cfg['authentication']['os_username']
         PASSWORD = cfg['authentication']['os_password']
-        PROJECT_NAME = cfg['authentication']['os_project_name']
-        USER_DOMAIN_NAME = cfg['authentication']['os_user_domain_name']
+        USER_DOMAIN_ID = cfg['authentication']['os_user_domain_id']
         AUTH_URL = cfg['authentication']['os_auth_url']
-        PROJECt_DOMAIN_NAME = cfg['authentication']['os_project_domain_name']
-        CINDER_ENDPOINTv2 = cfg['endpoints']['cinderv2_endpoint']
-        IMAGE_FILE = cfg['image']['image_tmp_file']
+        PROJECT_DOMAIN_ID = cfg['authentication']['os_project_domain_id']
+        IMAGE_FILE =cfg['image']['image_tmp_file']
         IMAGE_URL = cfg['image']['image_download_url']
 
 except Exception as e:
@@ -50,16 +52,21 @@ try:
     with open(IMAGE_FILE, "wb") as f:
         f.write(r.content)
     logger.info("Trying to authenticate at Keystone...  ")
-    conn = connection.Connection(username=USERNAME, password=PASSWORD, auth_url=AUTH_URL,
-                                 project_name=PROJECT_NAME,
-                                 user_domain_name=USER_DOMAIN_NAME, project_domain_name=PROJECt_DOMAIN_NAME)
-    logger.info("Session created...  ")
 
-    glance = Client(VERSION, session=conn.session)
+    auth=v3.Password(
+        auth_url=AUTH_URL,
+        username=USERNAME,
+        password=PASSWORD,
+        user_domain_id=USER_DOMAIN_ID,
+        project_domain_id=PROJECT_DOMAIN_ID)
+    session=session.Session(auth=auth)
+
+
+    glance = Client(VERSION, session=session)
     logger.info("Glance client connected..")
 
     logger.info("Creating Image....")
-    image = glance.images.create(name="CirrosTest", disk_format="qcow2", container_format="bare")
+    image = glance.images.create(name="CirrosTest",disk_format='qcow2',container_format='bare')
     logger.info("Uploading Image...")
     glance.images.upload(image.id, open(IMAGE_FILE, 'rb'))
 
