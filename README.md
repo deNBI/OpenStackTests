@@ -5,6 +5,16 @@ You need to install the requirements.
 ~~~bash
 $> pip install -r requirements.txt
 ~~~
+or with pip.
+~~~bash
+$> pip install git+https://github.com/deNBI/OpenStackTests@master
+~~~
+
+or
+
+~~~bash
+$> pip install git+https://github.com/deNBI/OpenStackTests@dev
+~~~
 Before you can start the tests, you need to set some configurations. <br>
 You need to set them on the config.yml for all tests and also for the complex test in the complex_test.yml
 
