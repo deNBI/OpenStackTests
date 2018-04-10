@@ -11,7 +11,10 @@ try:
         PROJECT_NAME=cfg['authentication']['os_project_name']
         USER_DOMAIN_NAME=cfg['authentication']['os_user_domain_name']
         PROJECT_DOMAIN_NAME=cfg['authentication']['os_project_domain_name']
-        SERVICE=sys.argv[1]
+        if len(sys.argv) >=2:
+            SERVICE=sys.argv[1]
+        else :
+            SERVICE = None
 
 
 except Exception as e:
@@ -26,52 +29,63 @@ formatter = logging.Formatter('%(asctime)s - - %(levelname)s  - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
-try:
-    logger.info("----------------------")
-    logger.info("Start Test: check_{0}".format(SERVICE))
-    logger.info("Trying to connect to Keystone-Endpoint... ")
+logger.info("Trying to connect to Keystone-Endpoint... ")
 
-    conn = connection.Connection(username=USERNAME, password=PASSWORD, auth_url=AUTH_URL,
-                                 project_name=PROJECT_NAME,
-                                 user_domain_name=USER_DOMAIN_NAME, project_domain_name=PROJECT_DOMAIN_NAME)
-    if SERVICE == '--help':
-        print('To test an endpoint you need to give the service name as the first parameter \n'
-              'For example: python3 endpoint_test.py swift \n'
-              'This would test the swift service.\n' )
-        print('Avaiable Services are : ')
-        for serv in conn.identity.services():
-            print(serv.to_dict()['name'])
-        sys.exit(0)
-    token = conn.authorize()
+conn = connection.Connection(username=USERNAME, password=PASSWORD, auth_url=AUTH_URL,
+                             project_name=PROJECT_NAME,
+                             user_domain_name=USER_DOMAIN_NAME, project_domain_name=PROJECT_DOMAIN_NAME)
+if  SERVICE == '--help':
+    print('To test an endpoint you need to give the service name as the first parameter \n'
+          'For example: python3 endpoint_test.py swift \n'
+          'This would test the swift service.\n')
+    print('Avaiable Services are : ')
+    for serv in conn.identity.services():
+        print(serv.to_dict()['name'])
+    sys.exit(0)
+token = conn.authorize()
 
-    serviceid = conn.identity.find_service(SERVICE).to_dict()['id']
-    for e in conn.identity.endpoints():
-        e = e.to_dict()
-        if e['service_id'] == serviceid and e['interface'] == 'public':
-            url=e['url']
-            if SERVICE == 'cinder' or SERVICE =='cinderv2' or SERVICE == 'nova':
-                url=url.split('%')[0]
+def endpoint_test(service,should_exit=True):
 
-    headers={"X-Auth-Token" : token}
-    r = requests.get(url,headers=headers)
-    if (str(r.status_code)[0] == '2' or SERVICE == 'glance' and str(r.status_code)[0] == '3'):
-        logger.info("{0} alive ...".format(SERVICE))
-        logger.info("Succesful Test: check_{0}".format(SERVICE))
+    try:
         logger.info("----------------------")
-        sys.exit(0)
-    else :
-        logger.error(str(r.status_code) + ": " + str(r.content)[:97])
+        logger.info("Start Test: check_{0}".format(service))
+
+
+        serviceid = conn.identity.find_service(service).to_dict()['id']
+        for e in conn.identity.endpoints():
+            e = e.to_dict()
+            if e['service_id'] == serviceid and e['interface'] == 'public':
+                url=e['url']
+                if service == 'cinder' or service =='cinderv2' or service == 'nova':
+                    url=url.split('%')[0]
+
+        headers={"X-Auth-Token" : token}
+        r = requests.get(url,headers=headers)
+        if (str(r.status_code)[0] == '2' or service == 'glance' and str(r.status_code)[0] == '3'):
+            logger.info("{0} alive ...".format(service))
+            logger.info("Succesful Test: check_{0}".format(service))
+            logger.info("----------------------")
+            if should_exit is True:
+                sys.exit(0)
+        else :
+            logger.error(str(r.status_code) + ": " + str(r.content)[:97])
+            logger.info("Failed Test: check_{0}".format(service))
+            logger.info("----------------------")
+            print(str(r.status_code) + ": " + str(r.content))
+            sys.exit(2)
+
+
+
+
+    except Exception as e:
+        logger.error(str(e))
         logger.info("Failed Test: check_{0}".format(SERVICE))
         logger.info("----------------------")
-        print(str(r.status_code) + ": " + str(r.content))
+        print(str(e)[:100])
         sys.exit(2)
-
-
-
-
-except Exception as e:
-    logger.error(str(e))
-    logger.info("Failed Test: check_{0}".format(SERVICE))
-    logger.info("----------------------")
-    print(str(e)[:100])
-    sys.exit(2)
+if SERVICE and SERVICE != None:
+    endpoint_test(SERVICE)
+else :
+    for service in conn.identity.services():
+        endpoint_test(service.to_dict()['name'],should_exit=False)
+    sys.exit(0)
