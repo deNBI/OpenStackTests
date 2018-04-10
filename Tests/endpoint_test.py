@@ -34,7 +34,16 @@ try:
     conn = connection.Connection(username=USERNAME, password=PASSWORD, auth_url=AUTH_URL,
                                  project_name=PROJECT_NAME,
                                  user_domain_name=USER_DOMAIN_NAME, project_domain_name=PROJECT_DOMAIN_NAME)
+    if SERVICE == '--help':
+        print('To test an endpoint you need to give the service name as the first parameter \n'
+              'For example: python3 endpoint_test.py swift \n'
+              'This would test the swift service.\n' )
+        print('Avaiable Services are : ')
+        for serv in conn.identity.services():
+            print(serv.to_dict()['name'])
+        sys.exit(0)
     token = conn.authorize()
+
     serviceid = conn.identity.find_service(SERVICE).to_dict()['id']
     for e in conn.identity.endpoints():
         e = e.to_dict()
