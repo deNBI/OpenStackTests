@@ -4,7 +4,7 @@ import paramiko
 import yaml
 import logging
 import subprocess
-import time,os,traceback
+import time,os
 
 
 def cleanup(conn, floating_ip=None, subnet_id=None):
