@@ -259,6 +259,8 @@ try:
                                  project_name=PROJECT_NAME,
                                  user_domain_name=USER_DOMAIN_NAME, project_domain_name=PROJECT_DOMAIN_NAME)
     logger.info("Session created...  ")
+    floating_IP=None
+    subnet_id=None
 
     subnet_id = create_network(conn)
     create_router(conn, subnet_id=subnet_id)
@@ -272,7 +274,7 @@ try:
     logger.info("-----------")
     sys.exit(0)
 except Exception as e:
-    logger.error(str(e))
+    logger.error(e)
     cleanup(conn, subnet_id=subnet_id, floating_ip=floating_IP)
     logger.info("Failed complex test")
     logger.info("-----------")
