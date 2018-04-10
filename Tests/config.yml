@@ -11,14 +11,6 @@ authentication:
     os_user_domain_id:
     os_project_domain_id:
     
-endpoints: 
-    cinder_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:8776/v1/'
-    cinderv2_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:8776/v2/'
-    glance_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:9292/'
-    keystone_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:5000/v3/'
-    neutron_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:9696'
-    nova_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:8774/v2.1/'
-    swift_endpoint: 'https://openstack.cebitec.uni-bielefeld.de:8080/swift/v1/'
 
 image:
     image_download_url: 'http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img'
