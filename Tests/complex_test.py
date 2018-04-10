@@ -4,7 +4,7 @@ import paramiko
 import yaml
 import logging
 import subprocess
-import time,os
+import time,os,traceback
 
 
 def cleanup(conn, floating_ip=None, subnet_id=None):
@@ -274,7 +274,7 @@ try:
     logger.info("-----------")
     sys.exit(0)
 except Exception as e:
-    logger.error(e)
+    logger.error(e,exc_info=True)
     cleanup(conn, subnet_id=subnet_id, floating_ip=floating_IP)
     logger.info("Failed complex test")
     logger.info("-----------")

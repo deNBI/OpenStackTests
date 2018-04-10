@@ -78,7 +78,7 @@ def endpoint_test(service,should_exit=True):
 
 
     except Exception as e:
-        logger.error(str(e))
+        logger.error(e, exc_info=True)
         logger.info("Failed Test: check_{0}".format(SERVICE))
         logger.info("----------------------")
         print(str(e)[:100])

@@ -86,7 +86,7 @@ try:
 except Exception as e:
     os.remove(IMAGE_FILE)
 
-    logger.error(str(e))
+    logger.error(e, exc_info=True)
     logger.info("Failed test create_and_delete_image")
     logger.info("----------------------")
     print(str(e)[:100])
