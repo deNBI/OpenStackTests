@@ -22,9 +22,7 @@ default_flavor: 'de.NBI.default'
 default_user: 'cirros'
 #If you use cirros image set the cirros password: cubswin:)  , else just leave it blank
 cirros_password: 'cubswin:)'
-# the private key file for the login with ssh
-private_key_file: 'test.pem'
 
 # the name of the public key (e.g negios)
-public_key: 'Test'
+public_key_name: 'Test'
 
