@@ -23,7 +23,7 @@ There are some basic tests:
 
 1. endpoint_test.py -> it will test if an endpoint is avaiable just use the name of a service as a param like
 
-    => python3 endpoint_test.py swift 
+    => python3 endpoint_test.py swift
 2. create_and_delete_image.py -> Downloads an cirros Image and uploads it a the Openstack-Project, than deletes it
 
 ## Complex-Test
