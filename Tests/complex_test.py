@@ -77,11 +77,15 @@ def stop_server(conn):
 def create_network(conn):
     logger.info("Creating Network..")
 
+
     network = conn.network.create_network(name=NETWORK_NAME)
     network_subnet = conn.network.create_subnet(name=SUBNETWORK_NAME, network_id=network.id, ip_version=4,
-                                                cidr=SUBNETWORK_CIDR, gateway=SUBNETWORK_GATEWAY)
+                                                        cidr=SUBNETWORK_CIDR, gateway=SUBNETWORK_GATEWAY)
     logger.info("Network created..")
     return network_subnet.id
+
+
+
 
 
 def create_router(conn, subnet_id):
@@ -112,7 +116,10 @@ def create_keypair(conn):
 
 def delete_keypair(conn):
     logger.info("Deleting Private_Key_File from tmp...")
-    os.remove(PRIVATE_KEY_FILE)
+    try:
+        os.remove(PRIVATE_KEY_FILE)
+    except Exception:
+        pass
     logger.info("Private_Key-File deleted from tmp...")
     logger.info("Delete Keypair from Openstack...")
     keypair=conn.compute.find_keypair(PUBLIC_KEY_NAME)
@@ -261,8 +268,9 @@ try:
     logger.info("Session created...  ")
     floating_IP=None
     subnet_id=None
-
     subnet_id = create_network(conn)
+
+
     create_router(conn, subnet_id=subnet_id)
     create_keypair(conn)
     start_server(conn, subnet_id=subnet_id)
@@ -278,5 +286,5 @@ except Exception as e:
     cleanup(conn, subnet_id=subnet_id, floating_ip=floating_IP)
     logger.info("Failed complex test")
     logger.info("-----------")
-    print(str(e)[:100])
+    print(str(e)[:150])
     sys.exit(2)
