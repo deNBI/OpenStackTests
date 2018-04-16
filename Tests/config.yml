@@ -1,16 +1,15 @@
 
 
 authentication:
-    os_username:
+    os_username: 
     os_password:
     os_project_name:
-    os_user_domain_name: 
+    os_user_domain_name:
     os_auth_url:
     os_project_domain_name:
     os_project_id:
-    os_user_domain_id:
-    os_project_domain_id:
-    
+
+
 
 image:
     image_download_url: 'http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img'
