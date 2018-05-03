@@ -1,19 +1,19 @@
 # OpenStackTests
-This repositroy contains some Openstack tests. <br>
+This repositroy contains Openstack tests based python3. <br>
 ## Configuration
 You need to install the requirements.
 ~~~bash
-$> pip install -r requirements.txt
+$> pip3 install -r requirements.txt
 ~~~
 or with pip.
 ~~~bash
-$> pip install git+https://github.com/deNBI/OpenStackTests@master
+$> pip3 install git+https://github.com/deNBI/OpenStackTests@master
 ~~~
 
 or
 
 ~~~bash
-$> pip install git+https://github.com/deNBI/OpenStackTests@dev
+$> pip3 install git+https://github.com/deNBI/OpenStackTests@dev
 ~~~
 Before you can start the tests, you need to set some configurations. <br>
 You need to set them on the config.yml for all tests and also for the complex test in the complex_test.yml
@@ -21,14 +21,10 @@ You need to set them on the config.yml for all tests and also for the complex te
 ## Basic-Test
 There are some basic tests:
 
-1. check_cinder.py -> checks if Cinder EndPoint  is avaiable
-2. check cinderv2.py -> checks if Cinderv2 EndPoint  is avaiable
-3. check_glance.py -> checks if  Glance EndPoint  is avaiable
-4. check_keystone.py -> checks if Keystone EndPoint  is avaiable
-5. check_neutron.py -> checks if Neutron EndPoint  is avaiable
-6. check_swift.py -> checks if Swift EndPoint  is avaiable
-7. check_nova.py -> checks if Nova EndPoint  is avaiable
-8. create_and_delete_image.py -> Downloads an cirros Image and uploads it a the Openstack-Project, than deletes it
+1. endpoint_test.py -> it will test if an endpoint is avaiable just use the name of a service as a param like
+
+    => python3 endpoint_test.py swift
+2. create_and_delete_image.py -> Downloads an cirros Image and uploads it a the Openstack-Project, than deletes it
 
 ## Complex-Test
 The complex test needs beside the config.yml  also the complex_test.yml <br>

@@ -15,9 +15,9 @@ try:
         LOGFILE = cfg['logfile']
         USERNAME = cfg['authentication']['os_username']
         PASSWORD = cfg['authentication']['os_password']
-        USER_DOMAIN_ID = cfg['authentication']['os_user_domain_id']
+        USER_DOMAIN_ID = cfg['authentication']['os_user_domain_name']
         AUTH_URL = cfg['authentication']['os_auth_url']
-        PROJECT_DOMAIN_ID = cfg['authentication']['os_project_domain_id']
+        PROJECT_DOMAIN_ID = cfg['authentication']['os_project_domain_name']
         IMAGE_FILE =cfg['image']['image_tmp_file']
         IMAGE_URL = cfg['image']['image_download_url']
 
@@ -86,7 +86,7 @@ try:
 except Exception as e:
     os.remove(IMAGE_FILE)
 
-    logger.error(str(e))
+    logger.error(e, exc_info=True)
     logger.info("Failed test create_and_delete_image")
     logger.info("----------------------")
     print(str(e)[:100])

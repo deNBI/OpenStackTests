@@ -4,13 +4,14 @@ import paramiko
 import yaml
 import logging
 import subprocess
-import time
+import time,os
 
 
 def cleanup(conn, floating_ip=None, subnet_id=None):
     logger.info("Starting cleanup...")
     remove_floating_ip(conn, floating_ip)
     delete_server(conn)
+    delete_keypair(conn)
     delete_router(conn, subnet_id=subnet_id)
     delete_network(conn)
     logger.info("Cleanup done...")
@@ -76,11 +77,15 @@ def stop_server(conn):
 def create_network(conn):
     logger.info("Creating Network..")
 
+
     network = conn.network.create_network(name=NETWORK_NAME)
     network_subnet = conn.network.create_subnet(name=SUBNETWORK_NAME, network_id=network.id, ip_version=4,
-                                                cidr=SUBNETWORK_CIDR, gateway=SUBNETWORK_GATEWAY)
+                                                        cidr=SUBNETWORK_CIDR, gateway=SUBNETWORK_GATEWAY)
     logger.info("Network created..")
     return network_subnet.id
+
+
+
 
 
 def create_router(conn, subnet_id):
@@ -91,6 +96,40 @@ def create_router(conn, subnet_id):
 
     conn.network.add_interface_to_router(router, subnet_id=subnet_id)
     logger.info("Router created..")
+
+def create_keypair(conn):
+
+        key=paramiko.RSAKey.generate(1024)
+        key.write_private_key_file(PRIVATE_KEY_FILE)
+        public_key="ssh-rsa {0}".format(key.get_base64())
+        keypair = conn.compute.find_keypair(PUBLIC_KEY_NAME)
+        if not keypair:
+            logger.info("Create Keypair")
+            keypair = conn.compute.create_keypair(name=PUBLIC_KEY_NAME ,public_key=public_key)
+            return keypair
+        elif keypair.public_key != public_key:
+            logger.info("Key has changed. Replace old Key")
+            conn.compute.delete_keypair(keypair)
+            keypair = conn.compute.create_keypair(name=PUBLIC_KEY_NAME, public_key=public_key)
+            return keypair
+        return keypair
+
+def delete_keypair(conn):
+    logger.info("Deleting Private_Key_File from tmp...")
+    try:
+        os.remove(PRIVATE_KEY_FILE)
+    except Exception:
+        pass
+    logger.info("Private_Key-File deleted from tmp...")
+    logger.info("Delete Keypair from Openstack...")
+    keypair=conn.compute.find_keypair(PUBLIC_KEY_NAME)
+    if not keypair:
+        logger.info("No Keypair to delete")
+    else:
+        conn.compute.delete_keypair(keypair)
+        logger.info("Deleted Keypair from Openstack...")
+
+
 
 
 def start_server(conn, subnet_id):
@@ -117,7 +156,7 @@ def start_server(conn, subnet_id):
 
     server = conn.compute.create_server(
         name=INSTANCE_NAME, image_id=image.id, flavor_id=flavor.id,
-        networks=[{"uuid": network.id}],key_name=PUBLIC_KEY )
+        networks=[{"uuid": network.id}],key_name=PUBLIC_KEY_NAME)
 
     conn.compute.wait_for_server(server)
 
@@ -175,6 +214,8 @@ def connect_ssh_check_google(floating_ip):
 
 
 
+
+
 # The Test starts here
 try:
     #Reading config variables
@@ -187,6 +228,7 @@ try:
         USER_DOMAIN_NAME = cfg['authentication']['os_user_domain_name']
         AUTH_URL = cfg['authentication']['os_auth_url']
         PROJECT_DOMAIN_NAME = cfg['authentication']['os_project_domain_name']
+        PRIVATE_KEY_FILE='/tmp/private_test_key'
     with open('complex_test.yml', 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
         NETWORK_NAME = cfg['network_name']
@@ -200,9 +242,9 @@ try:
         FLOATING_IP_NETWORK = cfg['floating_ip_network']
         DEFAULT_FLAVOR = cfg['default_flavor']
         DEFAULT_USER = cfg['default_user']
-        PRIVATE_KEY_FILE = cfg['private_key_file']
+        PUBLIC_KEY_NAME=cfg['public_key_name']
         CIRROS_PASSWORD = cfg['cirros_password']
-        PUBLIC_KEY=cfg['public_key']
+
 
 except Exception as e:
     print("Config error: " + str(e)[:90])
@@ -224,9 +266,13 @@ try:
                                  project_name=PROJECT_NAME,
                                  user_domain_name=USER_DOMAIN_NAME, project_domain_name=PROJECT_DOMAIN_NAME)
     logger.info("Session created...  ")
-
+    floating_IP=None
+    subnet_id=None
     subnet_id = create_network(conn)
+
+
     create_router(conn, subnet_id=subnet_id)
+    create_keypair(conn)
     start_server(conn, subnet_id=subnet_id)
     floating_IP = add_floating_ip_to_server(conn, subnet_id=subnet_id)
     time.sleep(60)
@@ -236,10 +282,9 @@ try:
     logger.info("-----------")
     sys.exit(0)
 except Exception as e:
-
-    logger.error(str(e))
+    logger.error(e,exc_info=True)
     cleanup(conn, subnet_id=subnet_id, floating_ip=floating_IP)
     logger.info("Failed complex test")
     logger.info("-----------")
-    print(str(e)[:100])
+    print(str(e)[:150])
     sys.exit(2)
