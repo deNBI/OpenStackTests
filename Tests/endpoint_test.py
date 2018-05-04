@@ -58,10 +58,12 @@ def endpoint_test(service,should_exit=True):
                 url=e['url']
                 if service == 'cinder' or service =='cinderv2' or service == 'nova':
                     url=url.split('%')[0]
-
+                if service == 'heat' or service == 'heat-cfn':
+                    url=url.split('%')[0]
+                    url= url[:-3]
         headers={"X-Auth-Token" : token}
         r = requests.get(url,headers=headers)
-        if (str(r.status_code)[0] == '2' or service == 'glance' and str(r.status_code)[0] == '3'):
+        if (str(r.status_code)[0] == '2' or (service == 'glance' or service == 'heat' or service == 'heat-cfn' and str(r.status_code)[0] == '3')):
             logger.info("{0} alive ...".format(service))
             logger.info("Succesful Test: check_{0}".format(service))
             logger.info("----------------------")
