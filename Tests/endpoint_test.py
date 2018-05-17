@@ -62,8 +62,8 @@ def endpoint_test(service,should_exit=True):
                     url=url.split('%')[0]
                     url= url[:-3]
         headers={"X-Auth-Token" : token}
-        r = requests.get(url,headers=headers)
-        if (str(r.status_code)[0] == '2' or (service == 'glance' or service == 'heat' or service == 'heat-cfn' and str(r.status_code)[0] == '3')):
+        r = requests.options(url,headers=headers)
+        if (str(r.status_code)[0] != '5'):
             logger.info("{0} alive ...".format(service))
             logger.info("Succesful Test: check_{0}".format(service))
             logger.info("----------------------")
