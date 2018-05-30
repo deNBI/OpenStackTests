@@ -15,8 +15,8 @@ or
 ~~~bash
 $> pip3 install git+https://github.com/deNBI/OpenStackTests@dev
 ~~~
-Before you can start the tests, you need to set some configurations. <br>
-You need to set them on the config.yml for all tests and also for the complex test in the complex_test.yml
+Before you can start the tests you have to set some configurations. <br>
+All tests require the config.yml. The more complex tests also require the complex_test.yml
 
 ## Basic-Test
 There are some basic tests:
@@ -27,18 +27,18 @@ If the returning status code is not equal than 5xx, the test was successful
 You can see all avaiable services with the command:
     
 ~~~bash
-$> python3 endpoint_test --help
+$> python3 endpoint_test.py --help
 ~~~
 also if you would want to test all avaiable endpoints one after the other you can just use:
     
 ~~~bash
-$> python3 endpoint_test --help
+$> python3 endpoint_test.py
 ~~~
     
 if you want to test one specific endpoint use:
     
 ~~~bash
-$> python3 endpoint_test glance
+$> python3 endpoint_test.py glance
 ~~~
     
   
