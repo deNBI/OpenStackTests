@@ -15,20 +15,46 @@ or
 ~~~bash
 $> pip3 install git+https://github.com/deNBI/OpenStackTests@dev
 ~~~
-Before you can start the tests, you need to set some configurations. <br>
-You need to set them on the config.yml for all tests and also for the complex test in the complex_test.yml
+Before you can start the tests you have to set some configurations. <br>
+All tests require the config.yml. The more complex tests also require the complex_test.yml
 
 ## Basic-Test
 There are some basic tests:
 
-1. endpoint_test.py -> it will test if an endpoint is avaiable just use the name of a service as a param like
-
-    => python3 endpoint_test.py swift
-2. create_and_delete_image.py -> Downloads an cirros Image and uploads it a the Openstack-Project, than deletes it
+#### endpoint_test.py 
+The endpont_test sends an HTTP OPTIONS request to a specific Url of a service like glance.
+If the returning status code is not equal than 5xx, the test was successful
+You can see all avaiable services with the command:
+    
+~~~bash
+$> python3 endpoint_test.py --help
+~~~
+also if you would want to test all avaiable endpoints one after the other you can just use:
+    
+~~~bash
+$> python3 endpoint_test.py
+~~~
+    
+if you want to test one specific endpoint use:
+    
+~~~bash
+$> python3 endpoint_test.py glance
+~~~
+    
+  
+#### create_and_delete_image.py 
+The create_and_delete_image test goes through the following steps:
+    
+1. Downloads the actual cirros image
+2. Uploads the cirros image
+3. Deletes the image
+   
+If the image was uploaded and deleted without errors the test was succesfull
+  
 
 ## Complex-Test
 The complex test needs beside the config.yml  also the complex_test.yml <br>
-The complex Test complex_test.py follows the following Steps:
+The  complex_test.py goes through the following steps::
 
 1. Creates a network,subnet and a router connected to a specific network
 2. Start an instance using the default image(cirros)
